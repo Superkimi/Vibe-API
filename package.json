@@ -1,0 +1,47 @@
+{
+  "name": "vibe-api",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "A schema-first visual API composer with an AI pair builder.",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "next dev -p 30243",
+    "build": "next build --webpack",
+    "start": "next start -p 30243",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.2.6",
+    "@fontsource-variable/geist-mono": "^5.2.6",
+    "@phosphor-icons/react": "^2.1.10",
+    "@xyflow/react": "^12.9.3",
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.10"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260702.1",
+    "@tailwindcss/postcss": "^4.2.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "jsdom": "^27.4.0",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "type": "module"
+}

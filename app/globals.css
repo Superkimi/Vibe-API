@@ -1,0 +1,285 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --bg: #f4f1f8;
+  --panel: #fbf9fd;
+  --panel-strong: #ffffff;
+  --canvas: #fcfbfe;
+  --canvas-dot: #d9d1e4;
+  --text: #292530;
+  --text-soft: #706879;
+  --text-faint: #9b92a5;
+  --line: #e2dce9;
+  --line-strong: #cdc3d9;
+  --accent: #6650a4;
+  --accent-hover: #59458f;
+  --accent-soft: #eee8f8;
+  --accent-muted: #a695ce;
+  --cyan: #4e8792;
+  --amber: #9d7440;
+  --rose: #a94c60;
+  --danger-soft: #f7e8ec;
+  --shadow: 0 18px 44px rgba(71, 58, 88, 0.11);
+  --radius-panel: 14px;
+  --radius-control: 8px;
+  --sidebar-width: 286px;
+  --inspector-width: 370px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111015;
+  --panel: #17151c;
+  --panel-strong: #1d1a23;
+  --canvas: #15131a;
+  --canvas-dot: #3c3644;
+  --text: #f1edf6;
+  --text-soft: #b2aabb;
+  --text-faint: #807889;
+  --line: #312d36;
+  --line-strong: #494250;
+  --accent: #a995dc;
+  --accent-hover: #b8a5e7;
+  --accent-soft: #2b233c;
+  --accent-muted: #806ca9;
+  --cyan: #79bbc6;
+  --amber: #d5b36f;
+  --rose: #e28ea0;
+  --danger-soft: #3b232b;
+  --shadow: 0 20px 55px rgba(3, 2, 5, 0.36);
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; min-width: 320px; min-height: 100%; margin: 0; overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: "Geist Variable", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; -webkit-font-smoothing: antialiased; }
+button, input, textarea, select { font: inherit; }
+button, summary { -webkit-tap-highlight-color: transparent; }
+button { color: inherit; }
+button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 72%, transparent); outline-offset: 2px; }
+
+.vibe-api-shell { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--inspector-width); height: 100dvh; min-height: 620px; background: var(--bg); }
+.app-loading { display: grid; min-height: 100dvh; place-content: center; gap: 16px; color: var(--text-soft); text-align: center; }
+.loading-mark { width: 42px; height: 42px; margin: auto; border: 8px solid var(--accent-soft); border-top-color: var(--accent); border-radius: 50%; animation: loading-spin .9s linear infinite; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+
+.api-directory, .right-panel { position: relative; z-index: 4; min-width: 0; background: var(--panel); }
+.api-directory { display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+.directory-brand { display: flex; height: 66px; align-items: center; gap: 11px; padding: 0 17px; border-bottom: 1px solid var(--line); }
+.brand-mark { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: var(--accent); color: #fdfbff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+.directory-brand div:last-child { display: grid; gap: 1px; }
+.directory-brand strong { font-size: 14px; letter-spacing: -.02em; }
+.directory-brand span { color: var(--text-faint); font: 500 9px "Geist Mono Variable", monospace; letter-spacing: .06em; }
+.directory-intro { display: grid; gap: 9px; padding: 18px 16px 12px; }
+.directory-intro h2 { margin: 0; font-size: 17px; letter-spacing: -.03em; }
+.directory-intro p { margin: 0; color: var(--text-soft); font-size: 11px; line-height: 1.65; }
+.catalog-search { display: flex; align-items: center; gap: 8px; margin: 0 12px 9px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-strong); color: var(--text-faint); }
+.catalog-search input { width: 100%; min-width: 0; padding: 10px 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 11px; }
+.category-filter { display: flex; gap: 5px; padding: 0 12px 10px; overflow-x: auto; scrollbar-width: none; }
+.category-filter::-webkit-scrollbar { display: none; }
+.category-filter button { padding: 6px 8px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--text-soft); font-size: 10px; white-space: nowrap; cursor: pointer; }
+.category-filter button:hover, .category-filter button.active { border-color: color-mix(in srgb, var(--accent) 22%, var(--line)); background: var(--accent-soft); color: var(--accent); }
+.directory-count { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; color: var(--text-faint); font: 650 9px "Geist Mono Variable", monospace; letter-spacing: .06em; text-transform: uppercase; }
+.api-list { display: grid; gap: 4px; padding: 0 9px 12px; overflow: auto; }
+.api-list button { display: grid; grid-template-columns: 27px minmax(0, 1fr) 22px; gap: 8px; min-height: 69px; align-items: center; padding: 9px; border: 1px solid transparent; border-radius: 10px; background: transparent; text-align: left; cursor: pointer; }
+.api-list button:hover { border-color: var(--line); background: color-mix(in srgb, var(--accent-soft) 52%, transparent); }
+.api-list button .api-type { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 7px; background: var(--accent-soft); color: var(--accent); font: 800 8px "Geist Mono Variable", monospace; }
+.api-list button .api-type.post { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
+.api-list button > span:nth-child(2) { display: grid; min-width: 0; gap: 3px; }
+.api-list strong { overflow: hidden; color: var(--text); font-size: 11px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.api-list small { overflow: hidden; color: var(--text-faint); font: 500 9px "Geist Mono Variable", monospace; text-overflow: ellipsis; white-space: nowrap; }
+.api-add { color: var(--text-faint); }
+.api-list button:hover .api-add { color: var(--accent); }
+.directory-footer { display: grid; gap: 8px; margin-top: auto; padding: 13px 16px 16px; border-top: 1px solid var(--line); }
+.directory-footer small { color: var(--text-faint); font-size: 10px; line-height: 1.55; }
+.directory-footer a { color: var(--accent); font-size: 10px; text-underline-offset: 3px; }
+
+.workspace-center { display: flex; min-width: 0; flex-direction: column; background: var(--canvas); }
+.top-toolbar { display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 14px; padding: 0 17px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 82%, transparent); }
+.toolbar-title { display: flex; min-width: 0; align-items: center; gap: 9px; }
+.toolbar-title > div { display: grid; min-width: 0; gap: 3px; }
+.toolbar-title strong { overflow: hidden; max-width: 310px; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.toolbar-title small { color: var(--text-faint); font: 500 9px "Geist Mono Variable", monospace; }
+.toolbar-title input { width: min(300px, 30vw); padding: 5px 7px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel-strong); color: var(--text); font-size: 13px; }
+.toolbar-actions { display: flex; align-items: center; gap: 5px; }
+.toolbar-actions button, .toolbar-menu > summary { display: inline-flex; min-height: 32px; align-items: center; gap: 6px; padding: 0 9px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--text-soft); font-size: 10px; cursor: pointer; }
+.toolbar-actions button:hover, .toolbar-menu > summary:hover { border-color: var(--line); background: var(--panel-strong); color: var(--text); }
+.toolbar-actions button:active, .toolbar-menu > summary:active { transform: translateY(1px); }
+.toolbar-actions .icon-only { width: 32px; justify-content: center; padding: 0; }
+.toolbar-menu { position: relative; }
+.toolbar-menu > summary { list-style: none; }
+.toolbar-menu > summary::-webkit-details-marker { display: none; }
+.toolbar-popover { position: absolute; z-index: 30; top: calc(100% + 7px); right: 0; display: grid; min-width: 156px; padding: 5px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-strong); box-shadow: var(--shadow); }
+.toolbar-popover button { display: flex; min-height: 33px; align-items: center; gap: 8px; padding: 7px 8px; border: 0; border-radius: 6px; background: transparent; color: var(--text-soft); text-align: left; cursor: pointer; }
+.toolbar-popover button:hover { background: var(--accent-soft); color: var(--text); }
+.view-tabs { display: flex; gap: 3px; margin-left: auto; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.view-tabs button { min-height: 26px; padding: 0 8px; border: 0; border-radius: 5px; background: transparent; color: var(--text-faint); font-size: 10px; cursor: pointer; }
+.view-tabs button.active { background: var(--panel-strong); color: var(--accent); box-shadow: 0 2px 8px rgba(69, 50, 96, .08); }
+.workspace-stage { min-height: 0; flex: 1; overflow: hidden; }
+
+.canvas-surface { width: 100%; height: 100%; background: var(--canvas); }
+.canvas-surface .react-flow__controls { border: 1px solid var(--line); box-shadow: var(--shadow); }
+.canvas-surface .react-flow__controls-button { width: 28px; height: 28px; border-color: var(--line); background: var(--panel-strong); color: var(--text-soft); }
+.canvas-surface .react-flow__controls-button svg { fill: currentColor; }
+.canvas-surface .react-flow__minimap { border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; }
+.canvas-surface .react-flow__edge-textbg { fill: var(--canvas); }
+.canvas-surface .react-flow__edge-text { fill: var(--text-soft); font: 500 9px "Geist Mono Variable", monospace; }
+.canvas-empty { display: grid; height: 100%; place-content: center; gap: 10px; color: var(--text-soft); text-align: center; }
+
+.api-node { min-width: 208px; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel-strong); box-shadow: 0 12px 25px rgba(71, 58, 88, .1); }
+.api-node.selected { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent), 0 14px 30px rgba(71, 58, 88, .13); }
+.api-node-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px 8px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--accent-soft) 34%, var(--panel-strong)); }
+.api-node-header > div { display: flex; min-width: 0; align-items: center; gap: 6px; }
+.api-node-method { color: var(--accent); font: 800 8px "Geist Mono Variable", monospace; }
+.api-node-header small { overflow: hidden; color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; text-overflow: ellipsis; white-space: nowrap; }
+.api-node-body { display: grid; gap: 6px; padding: 11px; }
+.api-node-body strong { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.api-node-body p { display: -webkit-box; overflow: hidden; margin: 0; color: var(--text-soft); font-size: 10px; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.api-node-path { overflow: hidden; color: var(--text-faint); font: 500 9px "Geist Mono Variable", monospace; text-overflow: ellipsis; white-space: nowrap; }
+.api-node-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 5px; color: var(--text-faint); font-size: 9px; }
+.api-node-footer span:last-child { color: var(--accent); font: 650 9px "Geist Mono Variable", monospace; }
+.api-node .react-flow__handle { width: 8px; height: 8px; border: 2px solid var(--panel-strong); background: var(--accent); }
+
+.schema-workbench { display: grid; height: 100%; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 1px; background: var(--line); }
+.schema-editor, .schema-summary { min-width: 0; background: var(--panel); }
+.schema-editor { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+.schema-header, .schema-footer, .schema-summary-header { display: flex; min-height: 48px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line); }
+.schema-header div, .schema-summary-header div { display: grid; gap: 3px; }
+.schema-header strong, .schema-summary-header strong { font-size: 12px; }
+.schema-header span, .schema-summary-header span { color: var(--text-faint); font-size: 9px; }
+.schema-header button, .schema-footer button { display: inline-flex; align-items: center; gap: 5px; min-height: 30px; padding: 0 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-strong); color: var(--text-soft); font-size: 10px; cursor: pointer; }
+.schema-editor textarea { width: 100%; height: 100%; min-height: 0; resize: none; padding: 16px; border: 0; outline: 0; background: var(--canvas); color: var(--text); font: 500 10px/1.75 "Geist Mono Variable", monospace; }
+.schema-footer { border-top: 1px solid var(--line); border-bottom: 0; }
+.schema-footer small { color: var(--text-soft); }
+.schema-footer small.error { color: var(--rose); }
+.schema-footer .primary-action { border-color: var(--accent); background: var(--accent); color: #fff; }
+.schema-summary { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.schema-summary-content { overflow: auto; padding: 16px; }
+.schema-summary-content pre { margin: 0; padding: 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--canvas); color: var(--text-soft); font: 500 10px/1.75 "Geist Mono Variable", monospace; white-space: pre-wrap; }
+
+.preview-panel { display: grid; height: 100%; grid-template-rows: auto auto minmax(0, 1fr); overflow: auto; background: var(--canvas); }
+.preview-header { display: flex; min-height: 76px; align-items: end; justify-content: space-between; gap: 18px; padding: 22px 28px 18px; border-bottom: 1px solid var(--line); }
+.preview-header div { display: grid; gap: 5px; }
+.preview-header h2 { margin: 0; font-size: 23px; letter-spacing: -.045em; }
+.preview-header p { margin: 0; color: var(--text-soft); font-size: 11px; }
+.preview-run { display: inline-flex; min-height: 33px; align-items: center; gap: 6px; padding: 0 10px; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent); color: #fff; font-size: 10px; cursor: pointer; }
+.preview-run:active { transform: translateY(1px); }
+.preview-source-strip { display: flex; gap: 7px; padding: 12px 28px; overflow-x: auto; border-bottom: 1px solid var(--line); }
+.preview-source-strip span { display: inline-flex; align-items: center; gap: 5px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--text-soft); font-size: 9px; white-space: nowrap; }
+.preview-source-strip b { color: var(--accent); font: 800 8px "Geist Mono Variable", monospace; }
+.widget-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 12px; padding: 20px 28px 35px; }
+.preview-widget { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); box-shadow: 0 10px 25px rgba(71, 58, 88, .05); }
+.preview-widget.wide { grid-column: 1 / -1; }
+.preview-widget header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 13px; }
+.preview-widget header strong { font-size: 11px; }
+.preview-widget header span { color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.metric-value { overflow: hidden; color: var(--accent); font-size: 29px; font-weight: 710; letter-spacing: -.06em; text-overflow: ellipsis; white-space: nowrap; }
+.metric-value small { margin-left: 4px; color: var(--text-faint); font-size: 11px; font-weight: 500; letter-spacing: 0; }
+.preview-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.preview-list li { display: grid; grid-template-columns: 18px 1fr; gap: 7px; padding-bottom: 8px; border-bottom: 1px solid var(--line); color: var(--text-soft); font-size: 10px; line-height: 1.5; }
+.preview-list li b { color: var(--accent); font: 750 9px "Geist Mono Variable", monospace; }
+.preview-table { display: grid; gap: 4px; }
+.preview-table div { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); color: var(--text-soft); font: 500 10px "Geist Mono Variable", monospace; }
+.preview-table div strong { color: var(--text); font-weight: 600; }
+.preview-json { max-height: 220px; overflow: auto; margin: 0; padding: 10px; border-radius: 8px; background: color-mix(in srgb, var(--canvas) 88%, var(--accent-soft)); color: var(--text-soft); font: 500 9px/1.6 "Geist Mono Variable", monospace; white-space: pre-wrap; }
+.preview-contract { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--text-soft); font-size: 10px; line-height: 1.55; }
+
+.right-panel { display: flex; min-height: 0; flex-direction: column; border-left: 1px solid var(--line); }
+.right-tabs { display: flex; min-height: 48px; align-items: end; gap: 3px; padding: 0 12px; border-bottom: 1px solid var(--line); }
+.right-tabs button { display: inline-flex; min-height: 33px; align-items: center; gap: 5px; padding: 0 8px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--text-faint); font-size: 10px; cursor: pointer; }
+.right-tabs button.active { border-bottom-color: var(--accent); color: var(--accent); }
+.right-body { min-height: 0; flex: 1; overflow: auto; }
+.right-panel-footer { display: flex; align-items: flex-start; gap: 6px; padding: 10px 14px 12px; border-top: 1px solid var(--line); color: var(--text-faint); font-size: 9px; line-height: 1.45; }
+.assistant-panel { display: flex; min-height: 100%; flex-direction: column; }
+.assistant-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 15px 13px; }
+.assistant-heading > div { display: flex; align-items: center; gap: 8px; }
+.assistant-icon { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 8px; background: var(--accent); color: #fff; }
+.assistant-heading strong { display: block; font-size: 12px; }
+.assistant-heading small { display: block; margin-top: 3px; color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.icon-button { display: grid; width: 29px; height: 29px; place-items: center; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--text-soft); cursor: pointer; }
+.icon-button:hover { border-color: var(--line); background: var(--panel-strong); color: var(--text); }
+.model-settings { display: grid; gap: 9px; margin: 0 13px 11px; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--canvas); }
+.model-settings label, .property-field { display: grid; gap: 5px; color: var(--text-soft); font-size: 9px; }
+.model-settings input, .property-field input, .property-field textarea, .property-field select, .model-settings select { width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 6px; outline: 0; background: var(--panel-strong); color: var(--text); font-size: 10px; }
+.model-settings p { margin: 0; color: var(--text-faint); font-size: 9px; line-height: 1.45; }
+.primary-action { display: inline-flex; min-height: 31px; align-items: center; justify-content: center; gap: 6px; padding: 0 9px; border: 1px solid var(--accent); border-radius: 7px; background: var(--accent); color: #fff; font-size: 10px; cursor: pointer; }
+.chat-thread { display: grid; align-content: start; gap: 12px; min-height: 0; padding: 0 13px 12px; }
+.chat-message { display: grid; grid-template-columns: 21px minmax(0, 1fr); gap: 7px; align-items: start; }
+.chat-message.user { grid-template-columns: minmax(0, 1fr); margin-left: 28px; }
+.chat-message > div { min-width: 0; }
+.chat-message p { margin: 0; padding: 9px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-strong); color: var(--text-soft); font-size: 10px; line-height: 1.6; white-space: pre-wrap; }
+.chat-message.user p { border-color: color-mix(in srgb, var(--accent) 24%, var(--line)); background: var(--accent-soft); color: var(--text); }
+.assistant-avatar { display: grid; width: 21px; height: 21px; place-items: center; border-radius: 7px; background: var(--accent-soft); color: var(--accent); }
+.chat-message small { display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; color: var(--accent); font-size: 8px; }
+.chat-message.error p { border-color: color-mix(in srgb, var(--rose) 36%, var(--line)); }
+.chat-message.error small { color: var(--rose); }
+.thinking-line { display: block; width: 58%; height: 5px; margin: 8px 0 2px; border-radius: 999px; background: linear-gradient(90deg, var(--accent-soft), var(--accent-muted), var(--accent-soft)); background-size: 200% 100%; animation: thinking 1.3s ease infinite; }
+@keyframes thinking { to { background-position: -200% 0; } }
+.quick-prompts { display: grid; gap: 5px; padding: 0 13px 10px; }
+.quick-prompts button { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--text-soft); text-align: left; font-size: 9px; cursor: pointer; }
+.quick-prompts button:hover { border-color: var(--accent-muted); color: var(--accent); }
+.chat-composer { display: grid; gap: 6px; margin-top: auto; padding: 10px 13px 13px; border-top: 1px solid var(--line); background: var(--panel); }
+.chat-composer textarea { min-height: 62px; resize: vertical; padding: 9px; border: 1px solid var(--line-strong); border-radius: 8px; outline: 0; background: var(--panel-strong); color: var(--text); font-size: 10px; line-height: 1.55; }
+.chat-composer footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.chat-composer footer span { color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.send-button { display: grid; width: 29px; height: 29px; place-items: center; border: 1px solid var(--accent); border-radius: 7px; background: var(--accent); color: #fff; cursor: pointer; }
+.send-button:disabled { cursor: not-allowed; opacity: .38; }
+
+.properties-panel { display: grid; gap: 14px; padding: 16px 14px 24px; }
+.properties-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.properties-title div { display: grid; gap: 4px; }
+.properties-title strong { font-size: 12px; }
+.properties-title small { overflow: hidden; color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; text-overflow: ellipsis; white-space: nowrap; }
+.icon-button.danger:hover { color: var(--rose); }
+.property-section { display: grid; gap: 10px; padding-top: 3px; }
+.property-section h3 { margin: 0; font-size: 10px; font-weight: 700; }
+.property-section p { margin: 0; color: var(--text-faint); font-size: 9px; line-height: 1.5; }
+.property-field textarea { min-height: 72px; resize: vertical; line-height: 1.5; }
+.property-field input[type="checkbox"] { width: auto; }
+.property-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.property-actions { display: flex; gap: 7px; }
+.property-actions button { display: inline-flex; min-height: 30px; align-items: center; gap: 5px; padding: 0 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-strong); color: var(--text-soft); font-size: 9px; cursor: pointer; }
+.property-actions button:hover { border-color: var(--accent-muted); color: var(--accent); }
+.widget-editor { display: grid; gap: 8px; padding-top: 6px; }
+.widget-row { display: grid; grid-template-columns: 1fr auto; gap: 7px; padding: 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--canvas); }
+.widget-row > div { display: grid; gap: 4px; min-width: 0; }
+.widget-row strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.widget-row small { overflow: hidden; color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; text-overflow: ellipsis; white-space: nowrap; }
+.widget-row button { display: grid; width: 24px; height: 24px; place-items: center; border: 0; background: transparent; color: var(--text-faint); cursor: pointer; }
+.widget-row button:hover { color: var(--rose); }
+.empty-properties { display: grid; place-items: center; gap: 9px; padding: 38px 15px; color: var(--text-soft); text-align: center; }
+.empty-properties strong { font-size: 12px; }
+.empty-properties p { max-width: 210px; margin: 0; color: var(--text-faint); font-size: 10px; line-height: 1.6; }
+.node-status { display: inline-flex; align-items: center; gap: 5px; padding: 7px 8px; border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-size: 9px; }
+
+@media (max-width: 1160px) {
+  :root { --sidebar-width: 248px; --inspector-width: 330px; }
+  .toolbar-actions button span { display: none; }
+  .view-tabs { margin-left: 0; }
+}
+
+@media (max-width: 860px) {
+  html, body { overflow: auto; }
+  .vibe-api-shell { display: block; height: auto; min-height: 100dvh; }
+  .api-directory, .right-panel { min-height: 520px; border: 0; border-bottom: 1px solid var(--line); }
+  .api-directory { max-height: 610px; }
+  .workspace-center { min-height: 760px; }
+  .right-panel { min-height: 650px; }
+  .top-toolbar { position: sticky; top: 0; z-index: 5; }
+}
+
+@media (max-width: 620px) {
+  .toolbar-title input { width: 150px; }
+  .toolbar-title strong { max-width: 155px; }
+  .toolbar-actions { gap: 2px; }
+  .toolbar-actions .icon-only { width: 29px; }
+  .view-tabs button { padding: 0 6px; }
+  .schema-workbench { grid-template-columns: 1fr; grid-template-rows: 1fr 240px; }
+  .widget-grid { grid-template-columns: 1fr; padding-inline: 16px; }
+  .preview-header, .preview-source-strip { padding-inline: 16px; }
+  .preview-widget.wide { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
