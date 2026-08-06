@@ -5,10 +5,11 @@ import { ArrowUpRight, BracketsCurly, FolderSimple, MagnifyingGlass, Plus, Spark
 import { apiCatalog, catalogCategories } from "@/lib/api-catalog";
 import { type ApiCategory } from "@/lib/api-schema";
 import { useVibeApiStore } from "@/lib/store";
+import { localizeApiDefinition, localizeCategory } from "@/lib/api-localization";
 import { useLocale } from "./LocaleProvider";
 
 export function ApiDirectory() {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const addApiNode = useVibeApiStore((state) => state.addApiNode);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<ApiCategory | "all">("all");
@@ -37,14 +38,14 @@ export function ApiDirectory() {
       </label>
       <div className="category-filter" aria-label="API categories">
         <button type="button" className={category === "all" ? "active" : ""} onClick={() => setCategory("all")}>{t("all")}</button>
-        {catalogCategories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} onClick={() => setCategory(item)}>{item}</button>)}
+        {catalogCategories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} onClick={() => setCategory(item)}>{localizeCategory(item, locale)}</button>)}
       </div>
       <div className="directory-count"><span>{t("sources")}</span><span>{filtered.length} / {apiCatalog.length}</span></div>
       <nav className="api-list">
         {filtered.map((api) => (
-          <button type="button" key={api.id} onClick={() => addApiNode(api)} title={t("addToCanvas", { name: api.name })}>
+          <button type="button" key={api.id} onClick={() => addApiNode(api)} title={t("addToCanvas", { name: localizeApiDefinition(api, locale).name })}>
             <span className={`api-type ${api.method === "POST" ? "post" : ""}`}>{api.method}</span>
-            <span><strong>{api.name}</strong><small>{api.provider} · {api.path}</small></span>
+            <span><strong>{localizeApiDefinition(api, locale).name}</strong><small>{api.provider} · {api.path}</small></span>
             <Plus className="api-add" size={16} weight="bold" aria-hidden="true" />
           </button>
         ))}

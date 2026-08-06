@@ -54,6 +54,7 @@
 * { box-sizing: border-box; }
 html, body { width: 100%; min-width: 320px; min-height: 100%; margin: 0; overflow: hidden; }
 html:has(.vibe-api-shell), body:has(.vibe-api-shell) { overflow: auto; }
+html:has(.explorer-page), body:has(.explorer-page) { overflow: auto; }
 body { background: var(--bg); color: var(--text); font-family: "Geist Variable", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; -webkit-font-smoothing: antialiased; }
 button, input, textarea, select { font: inherit; }
 button, summary { -webkit-tap-highlight-color: transparent; }

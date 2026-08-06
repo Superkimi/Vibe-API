@@ -5,6 +5,7 @@ import { Play, Pulse, ShieldCheck } from "@phosphor-icons/react";
 import { getApiDefinition } from "@/lib/api-catalog";
 import { formatPreviewValue, widgetValue } from "@/lib/preview";
 import { selectActiveWorkflow, useVibeApiStore } from "@/lib/store";
+import { localizeApiDefinition } from "@/lib/api-localization";
 import { useLocale } from "./LocaleProvider";
 
 function Metric({ value, format }: { value: unknown; format: string }) {
@@ -14,7 +15,7 @@ function Metric({ value, format }: { value: unknown; format: string }) {
 }
 
 export function PreviewPanel() {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const workflow = useVibeApiStore(selectActiveWorkflow);
   const [runCount, setRunCount] = useState(0);
   const run = () => setRunCount((count) => count + 1);
@@ -26,7 +27,8 @@ export function PreviewPanel() {
       </header>
       <div className="preview-source-strip">
         {workflow.nodes.map((node) => {
-          const definition = getApiDefinition(node.data.apiId);
+          const api = getApiDefinition(node.data.apiId);
+          const definition = api ? localizeApiDefinition(api, locale) : undefined;
           return <span key={node.id}><b>{node.data.method}</b>{definition?.name ?? node.data.apiId}</span>;
         })}
         <span><ShieldCheck size={12} /> {t("sampleDataOnly")}</span>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ArrowUpRight, ArrowsClockwise, BracketsCurly, Check, Copy, Funnel, MagnifyingGlass, Play, Plus, Sparkle, TerminalWindow, X } from "@phosphor-icons/react";
 import { apiCatalog, catalogCategories, catalogSources, getCatalogStats } from "@/lib/api-catalog";
+import { localizeApiDefinition, localizeCategory, localizeSampleResponse } from "@/lib/api-localization";
 import { withBasePath } from "@/lib/runtime-path";
 import type { ApiDefinition } from "@/lib/api-schema";
 import { LanguageSwitcher, useLocale } from "./LocaleProvider";
@@ -45,7 +46,7 @@ function categoryTone(category: string) {
 }
 
 export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => void }) {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const [query, setQuery] = useState("");
   const [source, setSource] = useState<SourceFilter>("all");
   const [category, setCategory] = useState("all");
@@ -74,6 +75,7 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
   }, [category, liveOnly, query, source]);
 
   const selected = selectedId ? (filtered.find((api) => api.id === selectedId) ?? apiCatalog.find((api) => api.id === selectedId) ?? filtered[0]) : undefined;
+  const localizedSelected = selected ? localizeApiDefinition(selected, locale) : undefined;
   const params = selected ? (paramDrafts[selected.id] ?? defaults(selected)) : {};
   const activeResult = result?.apiId === selected?.id ? result : null;
   const topCategories = useMemo(() => [...categoryCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 7), [categoryCounts]);
@@ -150,7 +152,7 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
         <aside className="explorer-filters" aria-label={t("catalogFilters")}>
           <div className="filter-heading"><div><span>{t("directory")}</span><strong>{t("chooseSourceShort")}</strong></div><Funnel size={15} /></div>
           <div className="source-switcher">{catalogSources.map((item) => <button type="button" key={item.id} className={source === item.id ? "active" : ""} onClick={() => setSource(item.id as SourceFilter)}>{item.id === "all" ? t("allSources") : item.id === "60s" ? t("liveRoutes") : t("publicApis")}<b>{item.id === "all" ? stats.total : item.id === "60s" ? stats.live : stats.directory}</b></button>)}</div>
-          <label className="filter-select-label">{t("category")}<select value={category} onChange={(event) => setCategory(event.target.value)}><option value="all">{t("allCategories", { count: stats.categories })}</option>{catalogCategories.map((item) => <option value={item} key={item}>{item} · {categoryCounts.get(item)}</option>)}</select></label>
+          <label className="filter-select-label">{t("category")}<select value={category} onChange={(event) => setCategory(event.target.value)}><option value="all">{t("allCategories", { count: stats.categories })}</option>{catalogCategories.map((item) => <option value={item} key={item}>{localizeCategory(item, locale)} · {categoryCounts.get(item)}</option>)}</select></label>
           <button type="button" className={`live-filter ${liveOnly ? "active" : ""}`} onClick={() => setLiveOnly((value) => !value)}><span className="live-mark" /> {t("onlyLive")} <b>{stats.live}</b></button>
           {(query || source !== "all" || category !== "all" || liveOnly) && <button type="button" className="reset-filters" onClick={resetFilters}><X size={13} /> {t("resetFilters")}</button>}
           <div className="filter-note"><TerminalWindow size={14} /><p><strong>{t("resultFirst")}</strong> {t("resultFirstNote")}</p></div>
@@ -159,17 +161,17 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
 
         <section className="catalog-results" aria-label={t("apiResults")}>
           <header className="results-header"><div><span>{t("completeInterfaceList")}</span><strong>{filtered.length.toLocaleString()} <small>of {stats.total.toLocaleString()}</small></strong></div><div className="results-hint"><span className="legend live" /> {t("livePreview")} <span className="legend sample" /> {t("catalogSample")}</div></header>
-          <div className="api-card-list">{filtered.map((api) => <button type="button" className={`api-card ${selected?.id === api.id ? "selected" : ""}`} key={api.id} onClick={() => selectApi(api)}><span className={`api-card-method ${api.method === "POST" ? "post" : api.method === "ALL" ? "all" : ""}`}>{api.method}</span><span className={`api-card-tone ${categoryTone(api.category)}`} /><span className="api-card-main"><strong>{api.name}</strong><small>{api.provider} · {api.category}</small><code>{api.path}</code></span><span className="api-card-response"><small>{api.livePreview ? t("liveResult") : t("catalogResult")}</small><span>{api.responsePreview}</span><code>{oneLine(api.sampleResponse) ?? t("noSampleResponse")}</code></span><span className="api-card-arrow">{selected?.id === api.id ? "●" : "↗"}</span></button>)}</div>
+          <div className="api-card-list">{filtered.map((api) => { const localized = localizeApiDefinition(api, locale); return <button type="button" className={`api-card ${selected?.id === api.id ? "selected" : ""}`} key={api.id} onClick={() => selectApi(api)}><span className={`api-card-method ${api.method === "POST" ? "post" : api.method === "ALL" ? "all" : ""}`}>{api.method}</span><span className={`api-card-tone ${categoryTone(api.category)}`} /><span className="api-card-main"><strong>{localized.name}</strong><small>{api.provider} · {localized.category}</small><code>{api.path}</code></span><span className="api-card-response"><small>{api.livePreview ? t("liveResult") : t("catalogResult")}</small><span>{localized.responsePreview}</span><code>{oneLine(localized.sampleResponse) ?? t("noSampleResponse")}</code></span><span className="api-card-arrow">{selected?.id === api.id ? "●" : "↗"}</span></button>; })}</div>
           {!filtered.length && <div className="catalog-empty"><strong>{t("noInterfaces")}</strong><p>{t("tryFilter")}</p><button type="button" onClick={resetFilters}>{t("reset")}</button></div>}
         </section>
 
         {selected && <aside className="result-inspector" aria-label={t("selectedApiResult")}>
-          <header className="result-inspector-header"><div><span className={`inspector-source ${selected.source === "60s" ? "live-source" : "directory-source"}`}>{selected.source === "60s" ? t("liveSource") : t("directorySource")}</span><h2>{selected.name}</h2><code>{selected.method} {selected.path}</code></div><button type="button" className="inspector-close" onClick={() => setSelectedId("")} aria-label={t("clearSelection")}><X size={15} /></button></header>
-          <p className="inspector-description">{selected.description}</p>
-          <div className="inspector-meta"><span>{selected.category}</span><span>{selected.authLabel}</span><span>{selected.https === true ? "HTTPS" : selected.https === false ? "HTTP only" : "HTTPS unknown"}</span></div>
-          {selected.params.length > 0 && <section className="request-fields"><div className="inspector-section-title"><span>{t("requestInputs")}</span><small>{t("parameters", { count: selected.params.length })}</small></div>{selected.params.map((param) => <label key={param.name}>{param.label}<input value={String(params[param.name] ?? "")} onChange={(event) => setParamDrafts((current) => ({ ...current, [selected.id]: { ...params, [param.name]: param.type === "number" ? Number(event.target.value) : event.target.value } }))} placeholder={param.defaultValue === undefined ? t("optional") : String(param.defaultValue)} /><small>{param.name}{param.required ? ` · ${t("required")}` : ` · ${t("optional")}`}</small></label>)}</section>}
+          <header className="result-inspector-header"><div><span className={`inspector-source ${selected.source === "60s" ? "live-source" : "directory-source"}`}>{selected.source === "60s" ? t("liveSource") : t("directorySource")}</span><h2>{localizedSelected?.name}</h2><code>{selected.method} {selected.path}</code></div><button type="button" className="inspector-close" onClick={() => setSelectedId("")} aria-label={t("clearSelection")}><X size={15} /></button></header>
+          <p className="inspector-description">{localizedSelected?.description}</p>
+          <div className="inspector-meta"><span>{localizedSelected?.category}</span><span>{localizedSelected?.authLabel}</span><span>{selected.https === true ? t("https") : selected.https === false ? t("httpOnly") : t("httpsUnknown")}</span></div>
+          {selected.params.length > 0 && <section className="request-fields"><div className="inspector-section-title"><span>{t("requestInputs")}</span><small>{t("parameters", { count: selected.params.length })}</small></div>{localizedSelected?.params.map((param) => <label key={param.name}>{param.label}<input value={String(params[param.name] ?? "")} onChange={(event) => setParamDrafts((current) => ({ ...current, [selected.id]: { ...params, [param.name]: param.type === "number" ? Number(event.target.value) : event.target.value } }))} placeholder={param.defaultValue === undefined ? t("optional") : String(param.defaultValue)} /><small>{param.description || param.name}{param.required ? ` · ${t("required")}` : ` · ${t("optional")}`}</small></label>)}</section>}
           <div className="inspector-actions"><button type="button" className="run-preview" onClick={runPreview} disabled={running}>{running ? <ArrowsClockwise className="spin" size={14} /> : <Play size={14} weight="fill" />}{selected.livePreview ? t("runLive") : t("showSample")}</button><button type="button" className="copy-request" onClick={copyRequest}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? t("copied") : t("copyRequest")}</button></div>
-          <section className="result-section"><div className="inspector-section-title"><span>{t("response")}</span><small>{activeResult ? activeResult.status === "sample" ? t("catalogSample") : `${activeResult.status} · ${activeResult.elapsedMs ?? 0}ms` : selected.livePreview ? t("sampleShapeNotFetched") : t("directoryMetadata")}</small></div><div className={`result-json ${activeResult && !activeResult.ok ? "error" : ""}`}><pre>{pretty(activeResult?.error ? { error: activeResult.error } : activeResult?.data ?? selected.sampleResponse)}</pre></div></section>
+          <section className="result-section"><div className="inspector-section-title"><span>{t("response")}</span><small>{activeResult ? activeResult.status === "sample" ? t("catalogSample") : `${activeResult.status} · ${activeResult.elapsedMs ?? 0}ms` : selected.livePreview ? t("sampleShapeNotFetched") : t("directoryMetadata")}</small></div><div className={`result-json ${activeResult && !activeResult.ok ? "error" : ""}`}><pre>{pretty(activeResult?.error ? { error: activeResult.error } : localizeSampleResponse(activeResult?.data ?? localizedSelected?.sampleResponse, locale))}</pre></div></section>
           <div className="result-footer"><a href={selected.sourceUrl} target="_blank" rel="noreferrer">{t("openSourceDocs")} <ArrowUpRight size={12} /></a><button type="button" onClick={() => onCompose(selected)}><Plus size={13} /> {t("composeThisApi")}</button></div>
         </aside>}
       </section>

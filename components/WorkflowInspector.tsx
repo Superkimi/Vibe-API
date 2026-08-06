@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { ArrowDown, ArrowsClockwise, Trash } from "@phosphor-icons/react";
 import { getApiDefinition } from "@/lib/api-catalog";
+import { localizeApiDefinition } from "@/lib/api-localization";
 import type { ApiParam } from "@/lib/api-schema";
 import { selectActiveWorkflow, useVibeApiStore } from "@/lib/store";
 import { useLocale } from "./LocaleProvider";
@@ -14,7 +15,7 @@ function coerce(value: string, param: ApiParam) {
 }
 
 export function WorkflowInspector() {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const workflow = useVibeApiStore(selectActiveWorkflow);
   const selectedNodeId = useVibeApiStore((state) => state.selectedNodeId);
   const selectedEdgeId = useVibeApiStore((state) => state.selectedEdgeId);
@@ -28,7 +29,7 @@ export function WorkflowInspector() {
   const updateWidget = useVibeApiStore((state) => state.updateWidget);
   const removeWidget = useVibeApiStore((state) => state.removeWidget);
   const autoLayout = useVibeApiStore((state) => state.autoLayout);
-  const definition = useMemo(() => selected ? getApiDefinition(selected.data.apiId) : undefined, [selected]);
+  const definition = useMemo(() => { const api = selected ? getApiDefinition(selected.data.apiId) : undefined; return api ? localizeApiDefinition(api, locale) : undefined; }, [locale, selected]);
 
   if (selected) {
     return <div className="properties-panel">

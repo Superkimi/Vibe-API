@@ -1,7 +1,7 @@
 /* The catalog is the primary product surface. Keep it denser than the
    composer, but let each row expose a result shape before selection. */
 body:has(.explorer-page) { overflow: auto; }
-.explorer-page { min-height: 100dvh; color: var(--text); background: var(--bg); }
+.explorer-page { min-height: 100dvh; overflow: visible; color: var(--text); background: var(--bg); }
 .explorer-nav { display: flex; min-height: 68px; align-items: center; gap: 22px; padding: 0 30px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 94%, transparent); }
 .explorer-brand { height: 68px; padding: 0; border: 0; }
 .explorer-nav-meta { display: flex; align-items: center; gap: 18px; margin-left: auto; color: var(--text-faint); font: 500 10px "Geist Mono Variable", monospace; }
@@ -33,7 +33,7 @@ body:has(.explorer-page) { overflow: auto; }
 .coverage-row i { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
 .coverage-row b { width: 35px; color: var(--text); font: 700 10px "Geist Mono Variable", monospace; text-align: right; }
 .coverage-card > small { display: block; margin-top: 16px; color: var(--text-faint); font-size: 9px; line-height: 1.5; }
-.explorer-workspace { display: grid; grid-template-columns: 248px minmax(0, 1fr) 388px; max-width: 1600px; min-height: 680px; margin: 0 auto 38px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); box-shadow: var(--shadow); }
+.explorer-workspace { display: grid; grid-template-columns: 248px minmax(0, 1fr) 388px; max-width: 1600px; min-height: 680px; margin: 0 auto 38px; border: 1px solid var(--line); border-radius: 14px; overflow: visible; background: var(--panel); box-shadow: var(--shadow); }
 .explorer-filters, .catalog-results, .result-inspector { min-width: 0; background: var(--panel); }
 .explorer-filters { display: flex; flex-direction: column; gap: 15px; padding: 19px 16px; border-right: 1px solid var(--line); }
 .filter-heading { display: flex; align-items: start; justify-content: space-between; color: var(--accent); }
@@ -89,7 +89,7 @@ body:has(.explorer-page) { overflow: auto; }
 .catalog-empty { display: grid; place-items: center; gap: 8px; min-height: 350px; padding: 35px; color: var(--text-soft); text-align: center; }
 .catalog-empty p { margin: 0; color: var(--text-faint); font-size: 10px; }
 .catalog-empty button { min-height: 30px; padding: 0 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-strong); color: var(--accent); font-size: 10px; cursor: pointer; }
-.result-inspector { position: sticky; top: 0; align-self: start; max-height: calc(100dvh - 20px); overflow: auto; padding: 19px 17px 22px; }
+.result-inspector { position: static; align-self: start; max-height: none; overflow: visible; padding: 19px 17px 22px; }
 .result-inspector-header { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
 .result-inspector-header > div { display: grid; min-width: 0; gap: 6px; }
 .inspector-source { width: fit-content; padding: 4px 6px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); font: 750 8px "Geist Mono Variable", monospace; letter-spacing: .08em; }
@@ -111,7 +111,7 @@ body:has(.explorer-page) { overflow: auto; }
 .run-preview:disabled { cursor: wait; opacity: .55; }
 .copy-request { background: var(--panel-strong); }
 .spin { animation: loading-spin .8s linear infinite; }
-.result-json { min-height: 190px; max-height: 390px; overflow: auto; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--canvas); }
+.result-json { min-height: 190px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--canvas); }
 .result-json.error { border-color: color-mix(in srgb, var(--rose) 42%, var(--line)); background: var(--danger-soft); }
 .result-json pre { margin: 0; color: var(--text-soft); font: 500 9px/1.65 "Geist Mono Variable", monospace; white-space: pre-wrap; word-break: break-word; }
 .result-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 15px; }
