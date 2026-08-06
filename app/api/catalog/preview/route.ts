@@ -30,6 +30,11 @@ function buildRequestUrl(api: ReturnType<typeof getApiDefinition>, params: Recor
   return url;
 }
 
+function responseFields(value: unknown) {
+  if (Array.isArray(value)) return value.length > 0 && value[0] && typeof value[0] === "object" ? Object.keys(value[0]) : [];
+  return value && typeof value === "object" ? Object.keys(value) : [];
+}
+
 export async function POST(request: Request) {
   try {
     const input = requestSchema.parse(await request.json());
@@ -37,9 +42,10 @@ export async function POST(request: Request) {
     if (!api) return Response.json({ error: "API definition not found." }, { status: 404 });
 
     const target = buildRequestUrl(api, input.params);
+    const requestMethod = api.method === "ALL" ? "GET" : api.method;
     const startedAt = Date.now();
     const upstream = await fetch(target, {
-      method: "GET",
+      method: requestMethod,
       headers: { accept: "application/json, text/plain, */*", "user-agent": "Vibe-API-Preview/1.0" },
       signal: AbortSignal.timeout(12_000),
       redirect: "follow",
@@ -54,11 +60,14 @@ export async function POST(request: Request) {
       apiId: api.id,
       source: api.source,
       previewMode: api.previewMode,
+      requestMethod,
+      requestParams: input.params,
       ok: upstream.ok,
       status: upstream.status,
       contentType,
       elapsedMs: Date.now() - startedAt,
       url: target.toString(),
+      responseFields: responseFields(data),
       data: compactPreview(data),
     });
   } catch (error) {

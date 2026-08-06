@@ -18,6 +18,11 @@ type PreviewResult = {
   contentType?: string;
   elapsedMs?: number;
   url?: string;
+  requestUrl?: string;
+  requestMethod?: string;
+  requestParams?: Record<string, string | number | boolean>;
+  responseFields?: string[];
+  note?: string;
   data?: unknown;
   error?: string;
 };
@@ -43,6 +48,30 @@ function categoryTone(category: string) {
   if (/news|social|video/i.test(category)) return "rose";
   if (/developer|development|security/i.test(category)) return "slate";
   return "lilac";
+}
+
+function responseFieldPaths(value: unknown, prefix = "", depth = 0): string[] {
+  if (depth > 4 || !value || typeof value !== "object") return [];
+  if (Array.isArray(value)) return value.length > 0 ? responseFieldPaths(value[0], `${prefix}[]`, depth + 1) : [];
+  return Object.entries(value).slice(0, 48).flatMap(([key, item]) => {
+    const path = prefix ? `${prefix}.${key}` : key;
+    return [path, ...responseFieldPaths(item, path, depth + 1)];
+  });
+}
+
+function requestUrlWithParams(api: ApiDefinition, params: Record<string, string | number | boolean>) {
+  const url = new URL(api.requestExample);
+  for (const [name, value] of Object.entries(params)) {
+    if (value === "" || value === undefined || value === null) continue;
+    if (url.pathname.includes(`{${name}}`)) {
+      url.pathname = url.pathname.replace(`{${name}}`, encodeURIComponent(String(value)));
+    } else if (url.pathname.includes(`:${name}`)) {
+      url.pathname = url.pathname.replace(`:${name}`, encodeURIComponent(String(value)));
+    } else {
+      url.searchParams.set(name, String(value));
+    }
+  }
+  return url.toString();
 }
 
 export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => void }) {
@@ -78,6 +107,12 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
   const localizedSelected = selected ? localizeApiDefinition(selected, locale) : undefined;
   const params = selected ? (paramDrafts[selected.id] ?? defaults(selected)) : {};
   const activeResult = result?.apiId === selected?.id ? result : null;
+  const responseValue = activeResult ? activeResult.data : localizedSelected?.sampleResponse;
+  const displayResponse = activeResult && activeResult.data !== undefined ? localizeSampleResponse(activeResult.data, locale) : responseValue;
+  const displayResponseFields = responseFieldPaths(displayResponse);
+  const requestUrl = activeResult?.requestUrl ?? activeResult?.url ?? (selected ? requestUrlWithParams(selected, params) : "");
+  const requestMethod = activeResult?.requestMethod ?? selected?.method ?? "GET";
+  const requestParams = activeResult?.requestParams ?? params;
   const topCategories = useMemo(() => [...categoryCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 7), [categoryCounts]);
 
   const selectApi = (api: ApiDefinition) => {
@@ -88,7 +123,7 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
   const runPreview = async () => {
     if (!selected) return;
     if (!selected.livePreview) {
-      setResult({ apiId: selected.id, source: selected.source, previewMode: "catalog", ok: true, status: "sample", data: selected.sampleResponse });
+      setResult({ apiId: selected.id, source: selected.source, previewMode: "catalog", ok: true, status: "sample", requestMethod: selected.method, requestUrl: selected.requestExample, requestParams: params, responseFields: responseFieldPaths(selected.sampleResponse), note: t("sampleContractNote"), data: selected.sampleResponse });
       return;
     }
     setRunning(true);
@@ -99,8 +134,9 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ apiId: selected.id, params }),
       });
-      const payload = await response.json() as PreviewResult;
-      setResult(response.ok ? payload : { ...payload, ok: false, status: response.status });
+      const payload = await response.json() as Partial<PreviewResult>;
+      const requestContext = { apiId: selected.id, source: selected.source, previewMode: "live", requestUrl: payload.url ?? requestUrlWithParams(selected, params), requestParams: params };
+      setResult(response.ok ? { ...requestContext, ...payload, ok: payload.ok ?? true } as PreviewResult : { ...requestContext, ...payload, ok: false, status: response.status, error: payload.error ?? t("requestFailed") } as PreviewResult);
     } catch (error) {
       setResult({ apiId: selected.id, source: selected.source, previewMode: "live", ok: false, status: 0, error: error instanceof Error ? error.message : t("requestFailed") });
     } finally {
@@ -110,7 +146,7 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
 
   const copyRequest = async () => {
     if (!selected) return;
-    await navigator.clipboard.writeText(selected.requestExample);
+    await navigator.clipboard.writeText(requestUrl);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
   };
@@ -167,11 +203,31 @@ export function ApiExplorer({ onCompose }: { onCompose: (api: ApiDefinition) => 
 
         {selected && <aside className="result-inspector" aria-label={t("selectedApiResult")}>
           <header className="result-inspector-header"><div><span className={`inspector-source ${selected.source === "60s" ? "live-source" : "directory-source"}`}>{selected.source === "60s" ? t("liveSource") : t("directorySource")}</span><h2>{localizedSelected?.name}</h2><code>{selected.method} {selected.path}</code></div><button type="button" className="inspector-close" onClick={() => setSelectedId("")} aria-label={t("clearSelection")}><X size={15} /></button></header>
-          <p className="inspector-description">{localizedSelected?.description}</p>
-          <div className="inspector-meta"><span>{localizedSelected?.category}</span><span>{localizedSelected?.authLabel}</span><span>{selected.https === true ? t("https") : selected.https === false ? t("httpOnly") : t("httpsUnknown")}</span></div>
-          {selected.params.length > 0 && <section className="request-fields"><div className="inspector-section-title"><span>{t("requestInputs")}</span><small>{t("parameters", { count: selected.params.length })}</small></div>{localizedSelected?.params.map((param) => <label key={param.name}>{param.label}<input value={String(params[param.name] ?? "")} onChange={(event) => setParamDrafts((current) => ({ ...current, [selected.id]: { ...params, [param.name]: param.type === "number" ? Number(event.target.value) : event.target.value } }))} placeholder={param.defaultValue === undefined ? t("optional") : String(param.defaultValue)} /><small>{param.description || param.name}{param.required ? ` · ${t("required")}` : ` · ${t("optional")}`}</small></label>)}</section>}
-          <div className="inspector-actions"><button type="button" className="run-preview" onClick={runPreview} disabled={running}>{running ? <ArrowsClockwise className="spin" size={14} /> : <Play size={14} weight="fill" />}{selected.livePreview ? t("runLive") : t("showSample")}</button><button type="button" className="copy-request" onClick={copyRequest}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? t("copied") : t("copyRequest")}</button></div>
-          <section className="result-section"><div className="inspector-section-title"><span>{t("response")}</span><small>{activeResult ? activeResult.status === "sample" ? t("catalogSample") : `${activeResult.status} · ${activeResult.elapsedMs ?? 0}ms` : selected.livePreview ? t("sampleShapeNotFetched") : t("directoryMetadata")}</small></div><div className={`result-json ${activeResult && !activeResult.ok ? "error" : ""}`}><pre>{pretty(activeResult?.error ? { error: activeResult.error } : localizeSampleResponse(activeResult?.data ?? localizedSelected?.sampleResponse, locale))}</pre></div></section>
+
+          <section className="inspector-overview">
+            <div className="inspector-section-title"><span>{t("interfaceOverview")}</span><small>{localizedSelected?.sourceLabel}</small></div>
+            <p className="inspector-description">{localizedSelected?.description}</p>
+            <div className="inspector-meta"><span>{localizedSelected?.category}</span><span>{localizedSelected?.authLabel}</span><span>{selected.https === true ? t("https") : selected.https === false ? t("httpOnly") : t("httpsUnknown")}</span></div>
+          </section>
+
+          <section className="contract-section request-contract">
+            <div className="inspector-section-title"><span>{t("requestContract")}</span><small>{requestMethod}</small></div>
+            <div className="request-url"><small>{t("requestUrl")}</small><code>{requestUrl}</code></div>
+            <div className="request-params-header"><span>{t("requestParams")}</span><small>{t("parameters", { count: selected.params.length })}</small></div>
+            {selected.params.length > 0 ? <div className="request-fields">{localizedSelected?.params.map((param) => <label key={param.name}>{param.label}<input value={String(params[param.name] ?? "")} onChange={(event) => { setResult(null); setParamDrafts((current) => ({ ...current, [selected.id]: { ...params, [param.name]: param.type === "number" ? Number(event.target.value) : event.target.value } })); }} placeholder={param.defaultValue === undefined ? t("optional") : String(param.defaultValue)} /><small><code>{param.name}</code> · {param.description || param.label} · {param.required ? t("required") : t("optional")}</small></label>)}</div> : <p className="contract-empty">{t("noDeclaredInputs")}</p>}
+            <details className="request-payload"><summary>{t("requestPayload")}</summary><pre>{pretty(requestParams)}</pre></details>
+          </section>
+
+          <div className="inspector-actions"><button type="button" className="run-preview" onClick={runPreview} disabled={running}>{running ? <ArrowsClockwise className="spin" size={14} /> : <Play size={14} weight="fill" />}{selected.livePreview ? t("runLive") : t("showContract")}</button><button type="button" className="copy-request" onClick={copyRequest}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? t("copied") : t("copyRequest")}</button></div>
+
+          <section className="contract-section response-contract">
+            <div className="inspector-section-title"><span>{t("responseContract")}</span><small>{activeResult ? activeResult.status === "sample" ? t("catalogSample") : `${activeResult.status} · ${activeResult.elapsedMs ?? 0}ms` : selected.livePreview ? t("sampleShapeNotFetched") : t("directoryMetadata")}</small></div>
+            <p className={`response-callout ${activeResult?.ok === false ? "error" : ""}`}>{activeResult?.error ?? activeResult?.note ?? (selected.livePreview ? t("liveCallNote") : t("sampleContractNote"))}</p>
+            <div className="response-meta"><span><b>{t("status")}</b>{activeResult ? activeResult.status : "sample"}</span><span><b>{t("elapsed")}</b>{activeResult?.elapsedMs ? `${activeResult.elapsedMs}ms` : "—"}</span><span><b>{t("contentType")}</b>{activeResult?.contentType ?? "catalog/json"}</span></div>
+            <div className="response-fields"><div className="inspector-section-title"><span>{t("responseFields")}</span><small>{displayResponseFields.length}</small></div>{displayResponseFields.length > 0 ? <div className="response-field-list">{displayResponseFields.map((field) => <code key={field}>{field}</code>)}</div> : <p className="contract-empty">{t("noResponseFields")}</p>}</div>
+            <div className="result-json"><div className="raw-response-label">{t("rawResponse")}</div><pre>{pretty(activeResult?.error ? { error: activeResult.error } : displayResponse)}</pre></div>
+          </section>
+
           <div className="result-footer"><a href={selected.sourceUrl} target="_blank" rel="noreferrer">{t("openSourceDocs")} <ArrowUpRight size={12} /></a><button type="button" onClick={() => onCompose(selected)}><Plus size={13} /> {t("composeThisApi")}</button></div>
         </aside>}
       </section>

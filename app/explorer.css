@@ -100,6 +100,15 @@ body:has(.explorer-page) { overflow: auto; }
 .inspector-description { margin: 12px 0 11px; color: var(--text-soft); font-size: 10px; line-height: 1.6; }
 .inspector-meta { display: flex; flex-wrap: wrap; gap: 5px; padding-bottom: 15px; border-bottom: 1px solid var(--line); }
 .inspector-meta span { padding: 5px 6px; border: 1px solid var(--line); border-radius: 5px; color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.contract-section { display: grid; gap: 10px; padding-top: 15px; border-top: 1px solid var(--line); }
+.request-url { display: grid; gap: 5px; padding: 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--canvas); }
+.request-url small, .request-params-header small { color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.request-url code { color: var(--text-soft); font: 500 9px/1.5 "Geist Mono Variable", monospace; overflow-wrap: anywhere; white-space: normal; }
+.request-params-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--text-soft); font-size: 9px; }
+.contract-empty { margin: 0; padding: 10px; border: 1px dashed var(--line-strong); border-radius: 8px; color: var(--text-faint); font-size: 9px; line-height: 1.55; }
+.request-payload { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.request-payload summary { padding: 8px 9px; color: var(--text-soft); font-size: 9px; cursor: pointer; }
+.request-payload pre { margin: 0; padding: 0 9px 9px; color: var(--text-soft); font: 500 8px/1.55 "Geist Mono Variable", monospace; white-space: pre-wrap; word-break: break-word; }
 .request-fields, .result-section { display: grid; gap: 10px; padding-top: 15px; }
 .inspector-section-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .inspector-section-title small { color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
@@ -113,6 +122,15 @@ body:has(.explorer-page) { overflow: auto; }
 .spin { animation: loading-spin .8s linear infinite; }
 .result-json { min-height: 190px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--canvas); }
 .result-json.error { border-color: color-mix(in srgb, var(--rose) 42%, var(--line)); background: var(--danger-soft); }
+.response-callout { margin: 0; padding: 9px; border: 1px solid color-mix(in srgb, var(--cyan) 28%, var(--line)); border-radius: 8px; background: color-mix(in srgb, var(--cyan) 7%, var(--panel)); color: var(--text-soft); font-size: 9px; line-height: 1.55; }
+.response-callout.error { border-color: color-mix(in srgb, var(--rose) 38%, var(--line)); background: var(--danger-soft); color: var(--rose); }
+.response-meta { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, .8fr) minmax(0, 1.4fr); gap: 5px; }
+.response-meta span { display: grid; gap: 4px; min-width: 0; padding: 7px; border: 1px solid var(--line); border-radius: 7px; color: var(--text-soft); font: 500 8px/1.4 "Geist Mono Variable", monospace; overflow-wrap: anywhere; }
+.response-meta b { color: var(--text-faint); font: 700 7px "Geist Mono Variable", monospace; letter-spacing: .05em; text-transform: uppercase; }
+.response-fields { display: grid; gap: 8px; }
+.response-field-list { display: flex; flex-wrap: wrap; gap: 5px; }
+.response-field-list code { max-width: 100%; padding: 5px 6px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); color: var(--accent); font: 500 8px "Geist Mono Variable", monospace; overflow-wrap: anywhere; }
+.raw-response-label { margin-bottom: 7px; color: var(--text-faint); font: 750 8px "Geist Mono Variable", monospace; letter-spacing: .08em; text-transform: uppercase; }
 .result-json pre { margin: 0; color: var(--text-soft); font: 500 9px/1.65 "Geist Mono Variable", monospace; white-space: pre-wrap; word-break: break-word; }
 .result-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 15px; }
 .result-footer button { min-height: 30px; padding-inline: 8px; border-color: var(--accent-muted); color: var(--accent); font-size: 9px; }
