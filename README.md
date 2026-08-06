@@ -1,10 +1,12 @@
 # Vibe API
 
-Compose public APIs by browsing a directory or talking to an AI assistant. Vibe API keeps the API graph, output dashboard, preview data, and export formats connected through one versioned workflow Schema.
+Browse every API response before you compose it. Vibe API unifies 1,716 entries from `public-apis` and `60s` into a searchable explorer, then keeps the selected API connected to the optional graph editor, output dashboard, preview data, and export formats through one versioned workflow Schema.
 
 ## What is included
 
-- Manual API directory with the researched `public-apis` and `60s` sources.
+- Complete checked-in catalog: 1,641 `public-apis` directory entries plus 75 published `60s` routes.
+- Explorer-first homepage with source/category filters, response snippets, request parameters, catalog samples, and a full selected-result inspector.
+- Server-side live preview for the 60s route catalog, with strict catalog IDs instead of arbitrary user URLs.
 - React Flow canvas for nodes, edges, parameters, mappings, and output keys.
 - Right-side AI panel with OpenAI-compatible `baseUrl`, model, and API key settings.
 - Deterministic local demo mode when no model key is configured.
@@ -19,7 +21,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:30243`. The default demo mode is local-first and does not make upstream API calls.
+Open `http://localhost:30243`. The homepage is the API Explorer; choose `Compose this API` only after inspecting a result. Demo AI mode is local-first and does not make upstream model calls.
 
 Optional environment variables:
 

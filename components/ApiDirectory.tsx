@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { ArrowUpRight, BracketsCurly, FolderSimple, MagnifyingGlass, Plus, Sparkle } from "@phosphor-icons/react";
-import { apiCatalog } from "@/lib/api-catalog";
-import { apiCategories, type ApiCategory } from "@/lib/api-schema";
+import { apiCatalog, catalogCategories } from "@/lib/api-catalog";
+import { type ApiCategory } from "@/lib/api-schema";
 import { useVibeApiStore } from "@/lib/store";
 
 export function ApiDirectory() {
@@ -35,7 +35,7 @@ export function ApiDirectory() {
       </label>
       <div className="category-filter" aria-label="API categories">
         <button type="button" className={category === "all" ? "active" : ""} onClick={() => setCategory("all")}>All</button>
-        {apiCategories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} onClick={() => setCategory(item)}>{item}</button>)}
+        {catalogCategories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} onClick={() => setCategory(item)}>{item}</button>)}
       </div>
       <div className="directory-count"><span>Sources</span><span>{filtered.length} / {apiCatalog.length}</span></div>
       <nav className="api-list">

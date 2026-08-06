@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { BracketsCurly, ChartLineUp, GearSix, Sparkle } from "@phosphor-icons/react";
 import { ApiCanvas } from "./ApiCanvas";
 import { ApiDirectory } from "./ApiDirectory";
+import { ApiExplorer } from "./ApiExplorer";
 import { AssistantPanel } from "./AssistantPanel";
 import { PreviewPanel } from "./PreviewPanel";
 import { SchemaPanel } from "./SchemaPanel";
 import { TopToolbar } from "./TopToolbar";
 import { WorkflowInspector } from "./WorkflowInspector";
 import { useVibeApiStore } from "@/lib/store";
+import type { ApiDefinition } from "@/lib/api-schema";
 
 type View = "canvas" | "preview" | "schema";
 type RightTab = "ai" | "config" | "preview";
@@ -19,11 +21,15 @@ export function VibeApiApp() {
   const setHydrated = useVibeApiStore((state) => state.setHydrated);
   const [view, setView] = useState<View>("canvas");
   const [rightTab, setRightTab] = useState<RightTab>("ai");
+  const [surface, setSurface] = useState<"explore" | "compose">("explore");
+  const addApiNode = useVibeApiStore((state) => state.addApiNode);
   useEffect(() => { if (!hydrated) setHydrated(true); }, [hydrated, setHydrated]);
   if (!hydrated) return <main className="app-loading"><div className="loading-mark" /><strong>Loading Vibe API workspace</strong></main>;
+  if (surface === "explore") return <ApiExplorer onCompose={(api: ApiDefinition) => { addApiNode(api); setSurface("compose"); }} />;
   return <main className="vibe-api-shell">
     <ApiDirectory />
     <section className="workspace-center">
+      <div className="composer-breadcrumb"><button type="button" onClick={() => setSurface("explore")}>← API Explorer</button><span>Composer is secondary: return to the catalog to inspect another response.</span></div>
       <TopToolbar view={view} onViewChange={setView} />
       <div className="workspace-stage">{view === "canvas" ? <ApiCanvas /> : view === "preview" ? <PreviewPanel /> : <SchemaPanel />}</div>
     </section>

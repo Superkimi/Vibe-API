@@ -9,8 +9,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host?.includes("localhost") ? "http" : "https");
   const metadataBase = new URL(host ? `${protocol}://${host}` : "http://localhost:30243");
-  const title = "Vibe API | Compose APIs by talking to them";
-  const description = "Build reliable API compositions with a visual canvas, live sample output, portable schemas, and an AI pair builder.";
+  const title = "Vibe API | Browse every API response before you compose";
+  const description = "Explore 1,716 interfaces from public-apis and 60s, inspect sample results, run live routes, then compose the APIs you choose.";
 
   return {
     metadataBase,

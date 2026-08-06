@@ -1,9 +1,11 @@
 import { z } from "zod";
 
 export const apiCategories = ["News", "Weather", "Finance", "Developer", "Utilities", "Lifestyle"] as const;
-export const apiMethods = ["GET", "POST"] as const;
-export const apiAuthModes = ["none", "apiKey", "bearer", "queryKey"] as const;
+export const apiMethods = ["GET", "POST", "ALL"] as const;
+export const apiAuthModes = ["none", "apiKey", "bearer", "queryKey", "oauth", "unknown"] as const;
 export const apiParamTypes = ["string", "number", "boolean"] as const;
+export const apiSources = ["public-apis", "60s"] as const;
+export const apiPreviewModes = ["catalog", "live"] as const;
 
 export const apiParamSchema = z.object({
   name: z.string().regex(/^[A-Za-z][A-Za-z0-9_.-]*$/),
@@ -18,7 +20,10 @@ export const apiDefinitionSchema = z.object({
   id: z.string().regex(/^[a-z0-9][a-z0-9-]+$/),
   name: z.string().min(1).max(80),
   provider: z.string().min(1).max(80),
-  category: z.enum(apiCategories),
+  // The upstream public-apis directory has dozens of categories. Keep this
+  // open so the checked-in catalog can mirror the source without collapsing
+  // useful distinctions into six composer-only buckets.
+  category: z.string().min(1).max(100),
   description: z.string().min(1).max(240),
   method: z.enum(apiMethods),
   baseUrl: z.string().url(),
@@ -28,6 +33,14 @@ export const apiDefinitionSchema = z.object({
   params: z.array(apiParamSchema).max(24).default([]),
   tags: z.array(z.string().max(30)).max(8).default([]),
   sourceUrl: z.string().url(),
+  source: z.enum(apiSources).default("public-apis"),
+  sourceLabel: z.string().min(1).max(80).default("API directory"),
+  requestExample: z.string().url().default("https://example.com/"),
+  previewMode: z.enum(apiPreviewModes).default("catalog"),
+  https: z.boolean().nullable().default(null),
+  cors: z.string().max(30).default("Unknown"),
+  responsePreview: z.string().max(180).default("Sample response available in the inspector."),
+  livePreview: z.boolean().default(false),
   sampleResponse: z.unknown(),
 });
 
@@ -115,7 +128,8 @@ export type ApiEdge = z.infer<typeof apiEdgeSchema>;
 export type WorkflowWidget = z.infer<typeof widgetSchema>;
 export type WorkflowOutput = z.infer<typeof workflowOutputSchema>;
 export type ApiWorkflow = z.infer<typeof apiWorkflowSchema>;
-export type ApiCategory = (typeof apiCategories)[number];
+export type ApiCategory = string;
+export type ApiSource = (typeof apiSources)[number];
 
 export function validateWorkflow(input: unknown) {
   return apiWorkflowSchema.parse(input);

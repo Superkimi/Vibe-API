@@ -1,0 +1,159 @@
+/* The catalog is the primary product surface. Keep it denser than the
+   composer, but let each row expose a result shape before selection. */
+body:has(.explorer-page) { overflow: auto; }
+.explorer-page { min-height: 100dvh; color: var(--text); background: var(--bg); }
+.explorer-nav { display: flex; min-height: 68px; align-items: center; gap: 22px; padding: 0 30px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 94%, transparent); }
+.explorer-brand { height: 68px; padding: 0; border: 0; }
+.explorer-nav-meta { display: flex; align-items: center; gap: 18px; margin-left: auto; color: var(--text-faint); font: 500 10px "Geist Mono Variable", monospace; }
+.explorer-nav-meta b { color: var(--text); font-weight: 750; }
+.explorer-compose-nav, .hero-live-toggle, .run-preview, .copy-request, .result-footer button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 33px; padding: 0 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-strong); color: var(--text-soft); font-size: 10px; cursor: pointer; }
+.explorer-compose-nav { border-color: var(--accent); background: var(--accent); color: #fff; font-weight: 650; }
+.explorer-compose-nav:hover, .run-preview:hover { background: var(--accent-hover); }
+.explorer-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(330px, .85fr); gap: 44px; max-width: 1600px; margin: 0 auto; padding: 56px 48px 38px; }
+.explorer-hero-copy { min-width: 0; }
+.explorer-kicker { display: flex; align-items: center; gap: 8px; color: var(--accent); font: 750 10px "Geist Mono Variable", monospace; letter-spacing: .14em; }
+.pulse-dot, .live-mark { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cyan) 15%, transparent); }
+.explorer-hero h1 { max-width: 720px; margin: 13px 0 12px; font-size: clamp(37px, 5vw, 69px); font-weight: 720; letter-spacing: -.075em; line-height: .98; }
+.explorer-hero h1 em { color: var(--accent); font-style: italic; font-weight: 600; }
+.explorer-hero-copy > p { max-width: 660px; margin: 0; color: var(--text-soft); font-size: 14px; line-height: 1.7; }
+.explorer-hero-actions { display: flex; align-items: center; gap: 8px; margin-top: 27px; }
+.hero-search { display: flex; min-width: 0; flex: 1; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel-strong); color: var(--accent); box-shadow: 0 8px 22px rgba(71, 58, 88, .05); }
+.hero-search input { width: 100%; min-width: 0; height: 43px; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 11px; }
+.hero-search input::placeholder { color: var(--text-faint); }
+.hero-live-toggle { min-height: 43px; white-space: nowrap; }
+.hero-live-toggle.active, .live-filter.active { border-color: color-mix(in srgb, var(--cyan) 38%, var(--line)); background: color-mix(in srgb, var(--cyan) 11%, var(--panel-strong)); color: var(--cyan); }
+.coverage-card { align-self: end; padding: 19px 20px 17px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); }
+.coverage-header, .coverage-row { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.coverage-header { margin-bottom: 18px; color: var(--text-soft); font: 650 10px "Geist Mono Variable", monospace; text-transform: uppercase; letter-spacing: .08em; }
+.coverage-header b { color: var(--accent); font-size: 21px; letter-spacing: -.08em; }
+.coverage-bars { display: grid; gap: 9px; }
+.coverage-row { min-width: 0; color: var(--text-soft); font-size: 10px; }
+.coverage-row > span { width: 116px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.coverage-row > div { height: 6px; flex: 1; overflow: hidden; border-radius: 999px; background: var(--accent-soft); }
+.coverage-row i { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+.coverage-row b { width: 35px; color: var(--text); font: 700 10px "Geist Mono Variable", monospace; text-align: right; }
+.coverage-card > small { display: block; margin-top: 16px; color: var(--text-faint); font-size: 9px; line-height: 1.5; }
+.explorer-workspace { display: grid; grid-template-columns: 248px minmax(0, 1fr) 388px; max-width: 1600px; min-height: 680px; margin: 0 auto 38px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); box-shadow: var(--shadow); }
+.explorer-filters, .catalog-results, .result-inspector { min-width: 0; background: var(--panel); }
+.explorer-filters { display: flex; flex-direction: column; gap: 15px; padding: 19px 16px; border-right: 1px solid var(--line); }
+.filter-heading { display: flex; align-items: start; justify-content: space-between; color: var(--accent); }
+.filter-heading div { display: grid; gap: 4px; }
+.filter-heading span, .results-header span, .inspector-section-title span { color: var(--text-faint); font: 750 9px "Geist Mono Variable", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.filter-heading strong { color: var(--text); font-size: 15px; letter-spacing: -.03em; }
+.source-switcher { display: grid; gap: 5px; }
+.source-switcher button { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 37px; padding: 0 9px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--text-soft); font-size: 10px; text-align: left; cursor: pointer; }
+.source-switcher button:hover, .source-switcher button.active { border-color: var(--line); background: var(--accent-soft); color: var(--accent); }
+.source-switcher b { color: var(--text-faint); font: 700 9px "Geist Mono Variable", monospace; }
+.filter-select-label { display: grid; gap: 6px; color: var(--text-faint); font-size: 9px; }
+.filter-select-label select { width: 100%; height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 7px; outline: 0; background: var(--panel-strong); color: var(--text); font-size: 10px; }
+.live-filter, .reset-filters { display: inline-flex; align-items: center; gap: 7px; padding: 8px 8px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--text-soft); font-size: 9px; text-align: left; cursor: pointer; }
+.live-filter b { margin-left: auto; color: var(--text-faint); font: 700 9px "Geist Mono Variable", monospace; }
+.live-filter .live-mark { width: 6px; height: 6px; box-shadow: none; }
+.reset-filters { color: var(--accent); }
+.filter-note { display: flex; gap: 8px; margin-top: auto; padding: 11px 9px; border-top: 1px solid var(--line); color: var(--accent); }
+.filter-note p { margin: 0; color: var(--text-faint); font-size: 9px; line-height: 1.55; }
+.filter-note strong { color: var(--text-soft); }
+.filter-links { display: grid; gap: 7px; }
+.filter-links a, .result-footer a { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); font-size: 9px; text-underline-offset: 3px; }
+.catalog-results { overflow: hidden; border-right: 1px solid var(--line); }
+.results-header { display: flex; min-height: 73px; align-items: end; justify-content: space-between; gap: 12px; padding: 17px 19px 13px; border-bottom: 1px solid var(--line); }
+.results-header > div:first-child { display: grid; gap: 6px; }
+.results-header strong { font-size: 22px; letter-spacing: -.06em; }
+.results-header strong small { color: var(--text-faint); font-size: 10px; font-weight: 500; letter-spacing: 0; }
+.results-hint { display: flex; align-items: center; gap: 6px; color: var(--text-faint); font-size: 9px; white-space: nowrap; }
+.legend { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
+.legend.live { background: var(--cyan); }
+.legend.sample { background: var(--accent-muted); }
+.api-card-list { display: grid; gap: 0; max-height: 900px; overflow: auto; padding: 0 8px 22px; scrollbar-gutter: stable; }
+.api-card { display: grid; grid-template-columns: 34px 7px minmax(155px, 1.05fr) minmax(180px, 1fr) 22px; gap: 11px; min-height: 86px; align-items: center; padding: 11px; border: 1px solid transparent; border-bottom-color: var(--line); background: transparent; color: var(--text); text-align: left; cursor: pointer; content-visibility: auto; contain-intrinsic-size: 86px; }
+.api-card:hover { border-color: var(--line); background: color-mix(in srgb, var(--accent-soft) 38%, transparent); }
+.api-card.selected { border-color: color-mix(in srgb, var(--accent) 36%, var(--line)); background: color-mix(in srgb, var(--accent-soft) 75%, transparent); }
+.api-card-method { display: grid; width: 34px; height: 27px; place-items: center; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font: 800 8px "Geist Mono Variable", monospace; }
+.api-card-method.post { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
+.api-card-method.all { background: color-mix(in srgb, var(--rose) 13%, transparent); color: var(--rose); }
+.api-card-tone { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.api-card-tone.cyan { background: var(--cyan); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cyan) 13%, transparent); }
+.api-card-tone.amber { background: var(--amber); box-shadow: 0 0 0 4px color-mix(in srgb, var(--amber) 13%, transparent); }
+.api-card-tone.rose { background: var(--rose); box-shadow: 0 0 0 4px color-mix(in srgb, var(--rose) 13%, transparent); }
+.api-card-tone.slate { background: var(--text-soft); box-shadow: 0 0 0 4px color-mix(in srgb, var(--text-soft) 12%, transparent); }
+.api-card-main, .api-card-response { display: grid; min-width: 0; gap: 4px; }
+.api-card-main strong { overflow: hidden; font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.api-card-main small { overflow: hidden; color: var(--text-faint); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.api-card-main code, .api-card-response code, .result-inspector code { overflow: hidden; color: var(--text-soft); font: 500 9px "Geist Mono Variable", monospace; text-overflow: ellipsis; white-space: nowrap; }
+.api-card-response { overflow: hidden; }
+.api-card-response small { color: var(--cyan); font: 750 8px "Geist Mono Variable", monospace; letter-spacing: .06em; }
+.api-card-response span { overflow: hidden; color: var(--text-faint); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.api-card-response code { color: var(--text-soft); }
+.api-card-arrow { color: var(--text-faint); font-size: 11px; text-align: center; }
+.api-card.selected .api-card-arrow { color: var(--accent); }
+.catalog-empty { display: grid; place-items: center; gap: 8px; min-height: 350px; padding: 35px; color: var(--text-soft); text-align: center; }
+.catalog-empty p { margin: 0; color: var(--text-faint); font-size: 10px; }
+.catalog-empty button { min-height: 30px; padding: 0 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-strong); color: var(--accent); font-size: 10px; cursor: pointer; }
+.result-inspector { position: sticky; top: 0; align-self: start; max-height: calc(100dvh - 20px); overflow: auto; padding: 19px 17px 22px; }
+.result-inspector-header { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+.result-inspector-header > div { display: grid; min-width: 0; gap: 6px; }
+.inspector-source { width: fit-content; padding: 4px 6px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); font: 750 8px "Geist Mono Variable", monospace; letter-spacing: .08em; }
+.inspector-source.live-source { background: color-mix(in srgb, var(--cyan) 13%, transparent); color: var(--cyan); }
+.result-inspector h2 { margin: 0; font-size: 20px; letter-spacing: -.055em; }
+.result-inspector-header code { max-width: 300px; }
+.inspector-close { display: none; width: 27px; height: 27px; place-items: center; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-strong); color: var(--text-soft); cursor: pointer; }
+.inspector-description { margin: 12px 0 11px; color: var(--text-soft); font-size: 10px; line-height: 1.6; }
+.inspector-meta { display: flex; flex-wrap: wrap; gap: 5px; padding-bottom: 15px; border-bottom: 1px solid var(--line); }
+.inspector-meta span { padding: 5px 6px; border: 1px solid var(--line); border-radius: 5px; color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.request-fields, .result-section { display: grid; gap: 10px; padding-top: 15px; }
+.inspector-section-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.inspector-section-title small { color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.request-fields label { display: grid; gap: 5px; color: var(--text-soft); font-size: 9px; }
+.request-fields input { width: 100%; height: 31px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; outline: 0; background: var(--panel-strong); color: var(--text); font: 500 9px "Geist Mono Variable", monospace; }
+.request-fields label > small { color: var(--text-faint); font: 500 8px "Geist Mono Variable", monospace; }
+.inspector-actions { display: flex; gap: 7px; padding-top: 13px; }
+.run-preview { flex: 1; border-color: var(--accent); background: var(--accent); color: #fff; }
+.run-preview:disabled { cursor: wait; opacity: .55; }
+.copy-request { background: var(--panel-strong); }
+.spin { animation: loading-spin .8s linear infinite; }
+.result-json { min-height: 190px; max-height: 390px; overflow: auto; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--canvas); }
+.result-json.error { border-color: color-mix(in srgb, var(--rose) 42%, var(--line)); background: var(--danger-soft); }
+.result-json pre { margin: 0; color: var(--text-soft); font: 500 9px/1.65 "Geist Mono Variable", monospace; white-space: pre-wrap; word-break: break-word; }
+.result-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 15px; }
+.result-footer button { min-height: 30px; padding-inline: 8px; border-color: var(--accent-muted); color: var(--accent); font-size: 9px; }
+.composer-breadcrumb { display: flex; min-height: 36px; align-items: center; gap: 10px; padding: 0 17px; border-bottom: 1px solid var(--line); background: var(--accent-soft); color: var(--text-faint); font-size: 9px; }
+.composer-breadcrumb button { border: 0; background: transparent; color: var(--accent); font: 700 9px "Geist Mono Variable", monospace; cursor: pointer; }
+
+@media (max-width: 1160px) {
+  .explorer-workspace { grid-template-columns: 220px minmax(0, 1fr) 330px; }
+  .api-card { grid-template-columns: 34px 7px minmax(125px, 1fr) minmax(130px, 1fr) 18px; gap: 8px; }
+  .explorer-hero { gap: 25px; padding-inline: 30px; }
+  .explorer-nav { padding-inline: 20px; }
+  .explorer-nav-meta span:nth-child(2) { display: none; }
+}
+
+@media (max-width: 860px) {
+  body:has(.explorer-page) { overflow: auto; }
+  .explorer-nav { flex-wrap: wrap; gap: 0 15px; padding: 0 16px; }
+  .explorer-nav-meta { order: 3; width: 100%; min-height: 29px; margin-left: 0; }
+  .explorer-compose-nav { margin-left: auto; }
+  .explorer-hero { grid-template-columns: 1fr; padding: 36px 18px 24px; }
+  .explorer-hero h1 { font-size: clamp(38px, 12vw, 61px); }
+  .explorer-hero-copy > p { font-size: 12px; }
+  .coverage-card { max-width: none; }
+  .explorer-workspace { display: block; min-height: 0; margin: 0 12px 28px; border-radius: 12px; }
+  .explorer-filters { border-right: 0; border-bottom: 1px solid var(--line); }
+  .filter-note { margin-top: 0; }
+  .catalog-results { border-right: 0; border-bottom: 1px solid var(--line); }
+  .api-card-list { max-height: 760px; }
+  .result-inspector { position: relative; max-height: none; }
+  .inspector-close { display: grid; }
+}
+
+@media (max-width: 620px) {
+  .explorer-nav-meta { gap: 10px; font-size: 8px; }
+  .explorer-nav-meta span:nth-child(3) { display: none; }
+  .explorer-hero-actions { display: grid; }
+  .hero-live-toggle { width: fit-content; }
+  .results-header { align-items: start; flex-direction: column; }
+  .results-hint { padding-bottom: 2px; }
+  .api-card { grid-template-columns: 31px 6px minmax(0, 1fr) 19px; gap: 8px; }
+  .api-card-response { display: none; }
+  .api-card-method { width: 31px; }
+  .result-footer { align-items: start; flex-direction: column; }
+}
