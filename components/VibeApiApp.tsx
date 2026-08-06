@@ -10,6 +10,7 @@ import { PreviewPanel } from "./PreviewPanel";
 import { SchemaPanel } from "./SchemaPanel";
 import { TopToolbar } from "./TopToolbar";
 import { WorkflowInspector } from "./WorkflowInspector";
+import { LanguageSwitcher, useLocale } from "./LocaleProvider";
 import { useVibeApiStore } from "@/lib/store";
 import type { ApiDefinition } from "@/lib/api-schema";
 
@@ -17,6 +18,7 @@ type View = "canvas" | "preview" | "schema";
 type RightTab = "ai" | "config" | "preview";
 
 export function VibeApiApp() {
+  const { t } = useLocale();
   const hydrated = useVibeApiStore((state) => state.hydrated);
   const setHydrated = useVibeApiStore((state) => state.setHydrated);
   const [view, setView] = useState<View>("canvas");
@@ -24,19 +26,19 @@ export function VibeApiApp() {
   const [surface, setSurface] = useState<"explore" | "compose">("explore");
   const addApiNode = useVibeApiStore((state) => state.addApiNode);
   useEffect(() => { if (!hydrated) setHydrated(true); }, [hydrated, setHydrated]);
-  if (!hydrated) return <main className="app-loading"><div className="loading-mark" /><strong>Loading Vibe API workspace</strong></main>;
+  if (!hydrated) return <main className="app-loading"><div className="loading-mark" /><strong>{t("loading")}</strong></main>;
   if (surface === "explore") return <ApiExplorer onCompose={(api: ApiDefinition) => { addApiNode(api); setSurface("compose"); }} />;
   return <main className="vibe-api-shell">
     <ApiDirectory />
     <section className="workspace-center">
-      <div className="composer-breadcrumb"><button type="button" onClick={() => setSurface("explore")}>← API Explorer</button><span>Composer is secondary: return to the catalog to inspect another response.</span></div>
+      <div className="composer-breadcrumb"><button type="button" onClick={() => setSurface("explore")}>{t("backToExplorer")}</button><span>{t("composerSecondary")}</span><LanguageSwitcher /></div>
       <TopToolbar view={view} onViewChange={setView} />
       <div className="workspace-stage">{view === "canvas" ? <ApiCanvas /> : view === "preview" ? <PreviewPanel /> : <SchemaPanel />}</div>
     </section>
     <aside className="right-panel" aria-label="AI and workflow details">
-      <div className="right-tabs" role="tablist"><button type="button" className={rightTab === "ai" ? "active" : ""} onClick={() => setRightTab("ai")} role="tab"><Sparkle size={12} weight="fill" /> AI</button><button type="button" className={rightTab === "config" ? "active" : ""} onClick={() => setRightTab("config")} role="tab"><GearSix size={12} /> Configure</button><button type="button" className={rightTab === "preview" ? "active" : ""} onClick={() => setRightTab("preview")} role="tab"><ChartLineUp size={12} /> Output</button></div>
+      <div className="right-tabs" role="tablist"><button type="button" className={rightTab === "ai" ? "active" : ""} onClick={() => setRightTab("ai")} role="tab"><Sparkle size={12} weight="fill" /> {t("ai")}</button><button type="button" className={rightTab === "config" ? "active" : ""} onClick={() => setRightTab("config")} role="tab"><GearSix size={12} /> {t("configure")}</button><button type="button" className={rightTab === "preview" ? "active" : ""} onClick={() => setRightTab("preview")} role="tab"><ChartLineUp size={12} /> {t("output")}</button></div>
       <div className="right-body">{rightTab === "ai" ? <AssistantPanel /> : rightTab === "config" ? <WorkflowInspector /> : <PreviewPanel />}</div>
-      <div className="right-panel-footer"><BracketsCurly size={12} /><span>One schema. Manual edits, AI edits, and exports stay in sync.</span></div>
+      <div className="right-panel-footer"><BracketsCurly size={12} /><span>{t("schemaSync")}</span></div>
     </aside>
   </main>;
 }

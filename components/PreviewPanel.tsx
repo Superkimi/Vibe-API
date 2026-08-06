@@ -5,6 +5,7 @@ import { Play, Pulse, ShieldCheck } from "@phosphor-icons/react";
 import { getApiDefinition } from "@/lib/api-catalog";
 import { formatPreviewValue, widgetValue } from "@/lib/preview";
 import { selectActiveWorkflow, useVibeApiStore } from "@/lib/store";
+import { useLocale } from "./LocaleProvider";
 
 function Metric({ value, format }: { value: unknown; format: string }) {
   const text = formatPreviewValue(value);
@@ -13,21 +14,22 @@ function Metric({ value, format }: { value: unknown; format: string }) {
 }
 
 export function PreviewPanel() {
+  const { t } = useLocale();
   const workflow = useVibeApiStore(selectActiveWorkflow);
   const [runCount, setRunCount] = useState(0);
   const run = () => setRunCount((count) => count + 1);
   return (
-    <section className="preview-panel" aria-label="Workflow preview">
+    <section className="preview-panel" aria-label={t("workflowPreview")}>
       <header className="preview-header">
         <div><h2>{workflow.output.title}</h2><p>{workflow.description}</p></div>
-        <button type="button" className="preview-run" onClick={run}><Play size={13} weight="fill" /> Run sample</button>
+        <button type="button" className="preview-run" onClick={run}><Play size={13} weight="fill" /> {t("runSample")}</button>
       </header>
       <div className="preview-source-strip">
         {workflow.nodes.map((node) => {
           const definition = getApiDefinition(node.data.apiId);
           return <span key={node.id}><b>{node.data.method}</b>{definition?.name ?? node.data.apiId}</span>;
         })}
-        <span><ShieldCheck size={12} /> Sample data only</span>
+        <span><ShieldCheck size={12} /> {t("sampleDataOnly")}</span>
       </div>
       <div className="widget-grid">
         {workflow.output.widgets.map((widget) => {
@@ -46,8 +48,8 @@ export function PreviewPanel() {
           );
         })}
         <article className="preview-widget wide">
-          <header><strong>Run contract</strong><span>{runCount ? `Sample run ${runCount}` : "Ready"}</span></header>
-          <p className="preview-contract"><Pulse size={13} /> Each widget points to a node output. Exported code keeps this graph and output contract intact.</p>
+          <header><strong>{t("runContract")}</strong><span>{runCount ? t("sampleRun", { count: runCount }) : t("ready")}</span></header>
+          <p className="preview-contract"><Pulse size={13} /> {t("widgetContract")}</p>
         </article>
       </div>
     </section>

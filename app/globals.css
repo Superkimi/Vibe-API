@@ -53,19 +53,20 @@
 
 * { box-sizing: border-box; }
 html, body { width: 100%; min-width: 320px; min-height: 100%; margin: 0; overflow: hidden; }
+html:has(.vibe-api-shell), body:has(.vibe-api-shell) { overflow: auto; }
 body { background: var(--bg); color: var(--text); font-family: "Geist Variable", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; -webkit-font-smoothing: antialiased; }
 button, input, textarea, select { font: inherit; }
 button, summary { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }
 button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 72%, transparent); outline-offset: 2px; }
 
-.vibe-api-shell { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--inspector-width); height: 100dvh; min-height: 620px; background: var(--bg); }
+.vibe-api-shell { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--inspector-width); align-items: start; min-height: 100dvh; background: var(--bg); }
 .app-loading { display: grid; min-height: 100dvh; place-content: center; gap: 16px; color: var(--text-soft); text-align: center; }
 .loading-mark { width: 42px; height: 42px; margin: auto; border: 8px solid var(--accent-soft); border-top-color: var(--accent); border-radius: 50%; animation: loading-spin .9s linear infinite; }
 @keyframes loading-spin { to { transform: rotate(360deg); } }
 
-.api-directory, .right-panel { position: relative; z-index: 4; min-width: 0; background: var(--panel); }
-.api-directory { display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+.api-directory, .right-panel { position: relative; z-index: 4; min-width: 0; min-height: 100dvh; background: var(--panel); }
+.api-directory { position: sticky; top: 0; display: flex; height: 100dvh; max-height: 100dvh; flex-direction: column; overflow: hidden; border-right: 1px solid var(--line); }
 .directory-brand { display: flex; height: 66px; align-items: center; gap: 11px; padding: 0 17px; border-bottom: 1px solid var(--line); }
 .brand-mark { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: var(--accent); color: #fdfbff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
 .directory-brand div:last-child { display: grid; gap: 1px; }
@@ -81,7 +82,7 @@ button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus
 .category-filter button { padding: 6px 8px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--text-soft); font-size: 10px; white-space: nowrap; cursor: pointer; }
 .category-filter button:hover, .category-filter button.active { border-color: color-mix(in srgb, var(--accent) 22%, var(--line)); background: var(--accent-soft); color: var(--accent); }
 .directory-count { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; color: var(--text-faint); font: 650 9px "Geist Mono Variable", monospace; letter-spacing: .06em; text-transform: uppercase; }
-.api-list { display: grid; gap: 4px; padding: 0 9px 12px; overflow: auto; }
+.api-list { display: grid; flex: 1; min-height: 0; gap: 4px; padding: 0 9px 12px; overflow: auto; }
 .api-list button { display: grid; grid-template-columns: 27px minmax(0, 1fr) 22px; gap: 8px; min-height: 69px; align-items: center; padding: 9px; border: 1px solid transparent; border-radius: 10px; background: transparent; text-align: left; cursor: pointer; }
 .api-list button:hover { border-color: var(--line); background: color-mix(in srgb, var(--accent-soft) 52%, transparent); }
 .api-list button .api-type { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 7px; background: var(--accent-soft); color: var(--accent); font: 800 8px "Geist Mono Variable", monospace; }
@@ -95,7 +96,7 @@ button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus
 .directory-footer small { color: var(--text-faint); font-size: 10px; line-height: 1.55; }
 .directory-footer a { color: var(--accent); font-size: 10px; text-underline-offset: 3px; }
 
-.workspace-center { display: flex; min-width: 0; flex-direction: column; background: var(--canvas); }
+.workspace-center { display: flex; min-width: 0; min-height: 100dvh; flex-direction: column; background: var(--canvas); }
 .top-toolbar { display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 14px; padding: 0 17px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 82%, transparent); }
 .toolbar-title { display: flex; min-width: 0; align-items: center; gap: 9px; }
 .toolbar-title > div { display: grid; min-width: 0; gap: 3px; }
@@ -107,6 +108,10 @@ button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus
 .toolbar-actions button:hover, .toolbar-menu > summary:hover { border-color: var(--line); background: var(--panel-strong); color: var(--text); }
 .toolbar-actions button:active, .toolbar-menu > summary:active { transform: translateY(1px); }
 .toolbar-actions .icon-only { width: 32px; justify-content: center; padding: 0; }
+.language-switcher { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.language-switcher button { min-width: 28px; min-height: 25px; padding: 0 6px; border: 0; border-radius: 5px; background: transparent; color: var(--text-faint); font: 700 9px "Geist Mono Variable", monospace; cursor: pointer; }
+.language-switcher button:hover { color: var(--text); }
+.language-switcher button.active { background: var(--panel-strong); color: var(--accent); box-shadow: 0 2px 8px rgba(69, 50, 96, .08); }
 .toolbar-menu { position: relative; }
 .toolbar-menu > summary { list-style: none; }
 .toolbar-menu > summary::-webkit-details-marker { display: none; }
@@ -116,7 +121,7 @@ button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus
 .view-tabs { display: flex; gap: 3px; margin-left: auto; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
 .view-tabs button { min-height: 26px; padding: 0 8px; border: 0; border-radius: 5px; background: transparent; color: var(--text-faint); font-size: 10px; cursor: pointer; }
 .view-tabs button.active { background: var(--panel-strong); color: var(--accent); box-shadow: 0 2px 8px rgba(69, 50, 96, .08); }
-.workspace-stage { min-height: 0; flex: 1; overflow: hidden; }
+.workspace-stage { flex: 0 0 auto; width: 100%; height: calc(100dvh - 102px); min-height: 680px; overflow: visible; }
 
 .canvas-surface { width: 100%; height: 100%; background: var(--canvas); }
 .canvas-surface .react-flow__controls { border: 1px solid var(--line); box-shadow: var(--shadow); }
@@ -185,11 +190,11 @@ button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus
 .preview-json { max-height: 220px; overflow: auto; margin: 0; padding: 10px; border-radius: 8px; background: color-mix(in srgb, var(--canvas) 88%, var(--accent-soft)); color: var(--text-soft); font: 500 9px/1.6 "Geist Mono Variable", monospace; white-space: pre-wrap; }
 .preview-contract { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--text-soft); font-size: 10px; line-height: 1.55; }
 
-.right-panel { display: flex; min-height: 0; flex-direction: column; border-left: 1px solid var(--line); }
+.right-panel { display: flex; height: auto; flex-direction: column; border-left: 1px solid var(--line); }
 .right-tabs { display: flex; min-height: 48px; align-items: end; gap: 3px; padding: 0 12px; border-bottom: 1px solid var(--line); }
 .right-tabs button { display: inline-flex; min-height: 33px; align-items: center; gap: 5px; padding: 0 8px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--text-faint); font-size: 10px; cursor: pointer; }
 .right-tabs button.active { border-bottom-color: var(--accent); color: var(--accent); }
-.right-body { min-height: 0; flex: 1; overflow: auto; }
+.right-body { min-height: auto; flex: 0 0 auto; overflow: visible; }
 .right-panel-footer { display: flex; align-items: flex-start; gap: 6px; padding: 10px 14px 12px; border-top: 1px solid var(--line); color: var(--text-faint); font-size: 9px; line-height: 1.45; }
 .assistant-panel { display: flex; min-height: 100%; flex-direction: column; }
 .assistant-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 15px 13px; }
@@ -263,7 +268,7 @@ button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus
   html, body { overflow: auto; }
   .vibe-api-shell { display: block; height: auto; min-height: 100dvh; }
   .api-directory, .right-panel { min-height: 520px; border: 0; border-bottom: 1px solid var(--line); }
-  .api-directory { max-height: 610px; }
+  .api-directory { position: static; height: 610px; max-height: 610px; }
   .workspace-center { min-height: 760px; }
   .right-panel { min-height: 650px; }
   .top-toolbar { position: sticky; top: 0; z-index: 5; }

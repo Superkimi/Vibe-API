@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     const input = requestSchema.parse(await request.json());
     const apiKey = input.apiKey || process.env.VIBE_API_API_KEY || "";
     if (!apiKey) {
-      const demo = demoWorkflowFromPrompt(input.prompt, input.workflow);
+      const demo = demoWorkflowFromPrompt(input.prompt, input.workflow, input.locale);
       return Response.json({ ...demo, editMode: "demo" });
     }
     const response = await fetch(modelEndpoint(input.baseUrl || process.env.VIBE_API_BASE_URL || "https://api.openai.com/v1"), {
